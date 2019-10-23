@@ -1,13 +1,13 @@
------------------------------------------------------------------------------------------
---
--- main.lua
--- Created by: Your Name
--- Date: Month Day, Year
--- Description: This calls the splash screen of the app to load itself.
------------------------------------------------------------------------------------------
+-- Title: SampleVideoGame
+-- Name: Nate Day
+-- Course: ICS2O
+-- This program is called "Are You Smarter Than a Turtle?"
 
--- Hiding Status Bar
--- HIDE THE STATUS BAR
+
+
+-- hide the status bar
+display.setStatusBar(display.HiddenStatusBar)
+
 
 -----------------------------------------------------------------------------------------
 
