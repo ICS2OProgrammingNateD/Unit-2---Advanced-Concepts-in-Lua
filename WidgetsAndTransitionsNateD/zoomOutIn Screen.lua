@@ -88,7 +88,7 @@ function scene:show( event )
         -- Pre-Setting Transition Options
         local transitionOptions = (
             {
-                effect = "zoomOutIn",
+                effect = "zoomOutInFade",
                 time = 1000
             })
 
