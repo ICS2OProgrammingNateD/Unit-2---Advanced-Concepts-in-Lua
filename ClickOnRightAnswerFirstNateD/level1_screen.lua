@@ -70,6 +70,8 @@ local livesText
 -- the text displaying congratulations
 local congratulationText 
 
+local incorrectText
+
 -- Displays text that says correct.
 local correct 
 
@@ -137,6 +139,8 @@ local function DisplayAnswers( )
 
 end
 
+
+
 -- Function that transitions to Lose Screen
 local function LoseScreenTransition( )        
     composer.gotoScene( "you_lose", {effect = "zoomInOutFade", time = 1000})
@@ -180,6 +184,9 @@ local function RestartScene()
     end
 end
 
+
+
+
 -- Functions that checks if the buttons have been clicked.
 local function TouchListenerAnswer(touch)
     -- get the user answer from the text object that was clicked on
@@ -200,6 +207,31 @@ local function TouchListenerAnswer(touch)
 
     end
 end
+
+
+-- Functions that checks if the buttons have been clicked.
+local function IncorrectAnswerListener(touch)
+    -- get the user answer from the text object that was clicked on
+    local userAnswer = answerTextObject.text
+
+    if (touch.phase == "ended") and (alreadyClickedAnswer == false) then
+
+        alreadyClickedAnswer = true
+
+        -- if the user gets the answer right, display Correct and call RestartSceneRight
+        if (answer == tonumber(userAnswer)) then     
+            incorrectText.isVisible = true
+            -- increase the number correct by 1
+            livesText = livesText - 1
+            -- call RestartScene after 1 second
+            timer.performWithDelay( 1000, RestartScene )
+        end        
+
+    end
+end
+
+
+
 
 local function TouchListenerWrongAnswer1(touch)
     -- get the user answer from the text object that was clicked on
@@ -265,6 +297,7 @@ end
 local function AddTextObjectListeners()
 
     answerTextObject:addEventListener("touch", TouchListenerAnswer)
+    answerTextObject:addEventListener("touch", IncorrectAnswerListener)
     wrongAnswer1TextObject:addEventListener("touch", TouchListenerWrongAnswer1)
     wrongAnswer2TextObject:addEventListener("touch", TouchListenerWrongAnswer2)
     wrongAnswer3TextObject:addEventListener("touch", TouchListenerWrongAnswer3)
@@ -274,6 +307,7 @@ end
 local function RemoveTextObjectListeners()
 
     answerTextObject:removeEventListener("touch", TouchListenerAnswer)
+    answerTextObject:removeEventListener("touch", IncorrectAnswerListener)
     wrongAnswer1TextObject:removeEventListener("touch", TouchListenerWrongAnswer1)
     wrongAnswer2TextObject:removeEventListener("touch", TouchListenerWrongAnswer2)
     wrongAnswer3TextObject:removeEventListener("touch", TouchListenerWrongAnswer3)
@@ -326,6 +360,12 @@ function scene:create( event )
     congratulationText:setTextColor(57/255, 230/255, 0)
     congratulationText.isVisible = false
 
+     -- create the text object that will say congratulations, set the colour and then hide it
+    incorrectText = display.newText("Incorrect!", display.contentWidth/2, display.contentHeight*2/5, nil, 50 )
+    incorrectText:setTextColor(57/255, 230/255, 0)
+    incorrectText.isVisible = false
+
+
     -- create the text object that will say Correct, set the colour and then hide it
     correct = display.newText("Correct", display.contentWidth/2, display.contentHeight*1/3, nil, 50 )
     correct:setTextColor(100/255, 47/255, 210/255)
@@ -341,7 +381,8 @@ function scene:create( event )
     level1Text:setTextColor(0, 0, 0)
     
     -- Insert objects into scene group
-    sceneGroup:insert( bkg )  
+    sceneGroup:insert( bkg )
+    sceneGroup:insert( incorrectText )  
     sceneGroup:insert( numberCorrectText )
     sceneGroup:insert( livesText )
     sceneGroup:insert( addEquationTextObject )
