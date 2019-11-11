@@ -49,7 +49,6 @@ local spikes3platform
 
 local torchesAndSign
 local door
-local door
 local character
 
 local heart1
