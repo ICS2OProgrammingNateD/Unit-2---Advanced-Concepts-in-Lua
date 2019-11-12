@@ -233,18 +233,7 @@ local function TouchListenerAnswer(touch)
     end
 end
 
-local function UserAnswer(touch)
-    if (answer == tonumber(userAnswer)) then
-        numberCorrect = numberCorrect + 1
-        correct.isVisible = true
-        timer.performWithDelay(500, HideCorrect)
 
-    else  incorrectText.isVisible = true
-        livesText = livesText - 1
-        correctAnswerObject.isVisible = true
-        timer.performWithDelay(700, HideCorrect)
-    end
-end
 
 
 -- Functions that checks if the buttons have been clicked.
@@ -370,6 +359,7 @@ local function AddTextObjectListeners()
     wrongAnswer1TextObject:addEventListener("touch", TouchListenerWrongAnswer1)
     wrongAnswer2TextObject:addEventListener("touch", TouchListenerWrongAnswer2)
     wrongAnswer3TextObject:addEventListener("touch", TouchListenerWrongAnswer3)
+   
 end
 
 -- Function that removes the touch listeners from each of the answer objects
@@ -380,6 +370,7 @@ local function RemoveTextObjectListeners()
     wrongAnswer1TextObject:removeEventListener("touch", TouchListenerWrongAnswer1)
     wrongAnswer2TextObject:removeEventListener("touch", TouchListenerWrongAnswer2)
     wrongAnswer3TextObject:removeEventListener("touch", TouchListenerWrongAnswer3)
+    
 
 end
 
