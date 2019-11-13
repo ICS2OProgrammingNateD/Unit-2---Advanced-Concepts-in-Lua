@@ -183,6 +183,10 @@ local function YouLoseTransition()
     composer.gotoScene( "you_lose" )
 end
 
+local function YouWinTransition()
+    composer.gotoScene( "you_win" )
+end
+
 local function onCollision( self, event )
     -- for testing purposes
     --print( event.target )        --the first object in the collision
@@ -250,8 +254,13 @@ local function onCollision( self, event )
 
         if (event.target.myName == "door") then
             --check to see if the user has answered 5 questions
+            --timer.performWithDelay( 200, YouWinTransition )
+            --audio.play(sound1)
             if (questionsAnswered == 3) then
                 -- after getting 3 questions right, go to the you win screen
+                --check to see if the user has answered 5 questions
+                timer.performWithDelay( 200, YouWinTransition )
+                audio.play(sound1)
             end
         end        
 
