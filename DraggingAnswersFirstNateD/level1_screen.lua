@@ -23,6 +23,19 @@ sceneName = "level1_screen"
 -- Creating Scene Object
 local scene = composer.newScene( sceneName )
 
+
+
+
+-- load sound
+audio.loadStream()
+
+-- add background music
+local backgroundMusic = audio.loadStream("Sounds/bkgMusic (2).mp3")
+audio.play(backgroundMusic, {loops = -1})
+
+-- create variable for sound
+local sound1 = audio.loadSound("Sounds/Correct.wav")
+local sound2 = audio.loadSound("Sounds/boo.mp3")
 -----------------------------------------------------------------------------------------
 -- LOCAL VARIABLES
 -----------------------------------------------------------------------------------------
@@ -39,6 +52,9 @@ local correctAnswer
 local alternateAnswer1
 local alternateAnswer2    
 local alternateAnswer3  
+
+local points = 0
+local lives = 2
 
 
 -- Variables containing the user answer and the actual answer
@@ -82,14 +98,66 @@ local booSound
 -----------------------------------------------------------------------------------------
 -- LOCAL FUNCTIONS
 -----------------------------------------------------------------------------------------
+local function NumericFieldListener( touch )
+
+    if (event.phase == "submitted") then 
+         -- clear text 
+           event.target.text = ""
+    
+        -- when the answer is submitted set their input to userAnswer
+        userAnswer = tonumber(event.target.text)
+
+        -- if the users answer and the correct answer are the same:
+        if (userAnswer == correctAnswer) then
+           audio.play(Sound1)
+           -- give a point if user gets the correct answer
+           points = points + 1
+           -- clear text 
+           event.target.text = ""
+           
+        -- if the users answer and the correct answer are not the same:
+        else
+            audio.play(Sound2)
+            -- take a life if user gets the incorrect answer
+            lives = lives - 1
+           
+        end   
+
+            -- if points reach 5 points display You Win!
+        if  
+            (points == 3)  then
+            youWin = display.newImageRect("Images/Winscreen.png", 1024, 769)
+            audio.stop()
+            youWin.x = display.contentCenterX
+            youWin.y = display.contentCenterY
+
+
+
+        end 
+
+        if    -- If lives = less or equal to zero display Game Over!
+            (lives == 0) then
+            gameOver = display.newImageRect("Images/Losescreen.png", 1024, 769)
+            audio.stop()
+            gameOver.x = display.contentCenterX
+            gameOver.y = display.contentCenterY
+
+
+
+        end   
+    end
+end
+
+
+
 
 local function DisplayQuestion()
     local randomNumber1
     local randomNumber2
 
     --set random numbers
-    randomNumber1 = math.random(2, 15)
-    randomNumber2 = math.random(2, 15)
+    randomNumber1 = math.random(3, 15)
+    randomNumber2 = math.random(3, 15)
 
     --calculate answer
     correctAnswer = randomNumber1 + randomNumber2
@@ -112,11 +180,11 @@ local function DetermineAlternateAnswers()
 
         
     -- generate incorrect answer and set it in the textbox
-    alternateAnswer1 = correctAnswer + math.random(3, 5)
+    alternateAnswer1 = correctAnswer + math.random(3, 9)
     alternateAnswerBox1.text = alternateAnswer1
 
     -- generate incorrect answer and set it in the textbox
-    alternateAnswer2 = correctAnswer - math.random(1, 2)
+    alternateAnswer2 = correctAnswer - math.random(1, 3)
     alternateAnswerBox2.text = alternateAnswer2
 
      -- generate incorrect answer and set it in the textbox
@@ -147,16 +215,16 @@ local function PositionAnswers()
     -- random position 1
     if (randomPosition == 1) then
         -- set the new y-positions of each of the answers
-        answerbox.y = display.contentHeight * 0.3
+        answerbox.y = display.contentHeight * 0.1
 
         --alternateAnswerBox2
         alternateAnswerBox2.y = display.contentHeight * 0.4
 
         --alternateAnswerBox1
-        alternateAnswerBox1.y = display.contentHeight * 0.5
+        alternateAnswerBox1.y = display.contentHeight * 0.7
 
         --alternateAnswerBox1
-        alternateAnswerBox3.y = display.contentHeight * 0.6
+        alternateAnswerBox3.y = display.contentHeight * 0.9
 
 
         ---------------------------------------------------------
@@ -172,13 +240,13 @@ local function PositionAnswers()
         answerbox.y = display.contentHeight * 0.4
         
         --alternateAnswerBox2
-        alternateAnswerBox2.y = display.contentHeight * 0.5
+        alternateAnswerBox2.y = display.contentHeight * 0.7
 
         --alternateAnswerBox1
-        alternateAnswerBox1.y = display.contentHeight * 0.6
+        alternateAnswerBox1.y = display.contentHeight * 0.9
 
          --alternateAnswerBox1
-        alternateAnswerBox3.y = display.contentHeight * 0.3
+        alternateAnswerBox3.y = display.contentHeight * 0.1
 
         --remembering their positions to return the answer in case it's wrong
         alternateAnswerBox1PreviousY = alternateAnswerBox1.y
@@ -188,13 +256,13 @@ local function PositionAnswers()
 
     -- random position 3
      elseif (randomPosition == 3) then
-        answerbox.y = display.contentHeight * 0.5
+        answerbox.y = display.contentHeight * 0.7
 
         --alternateAnswerBox2
-        alternateAnswerBox2.y = display.contentHeight * 0.6
+        alternateAnswerBox2.y = display.contentHeight * 0.9
 
         --alternateAnswerBox1
-        alternateAnswerBox1.y = display.contentHeight * 0.3
+        alternateAnswerBox1.y = display.contentHeight * 0.1
 
         --alternateAnswerBox1
         alternateAnswerBox3.y = display.contentHeight * 0.4
@@ -208,16 +276,16 @@ local function PositionAnswers()
 
         -- random position 3
     elseif (randomPosition == 4) then
-        answerbox.y = display.contentHeight * 0.6
+        answerbox.y = display.contentHeight * 0.9
 
         --alternateAnswerBox2
-        alternateAnswerBox2.y = display.contentHeight * 0.3
+        alternateAnswerBox2.y = display.contentHeight * 0.1
 
         --alternateAnswerBox1
         alternateAnswerBox1.y = display.contentHeight * 0.4
 
         --alternateAnswerBox1
-        alternateAnswerBox3.y = display.contentHeight * 0.5
+        alternateAnswerBox3.y = display.contentHeight * 0.7
 
         --remembering their positions to return the answer in case it's wrong
         alternateAnswerBox1PreviousY = alternateAnswerBox1.y
@@ -234,6 +302,8 @@ end
 
 -- Function to Restart Level 1
 local function RestartLevel1()
+    incorrectObject.isVisible = false
+    correctAnswerObject.isVisible = false
     DisplayQuestion()
     DetermineAlternateAnswers()
     PositionAnswers()    
@@ -241,6 +311,13 @@ end
 
 -- Function to Check User Input
 local function CheckUserAnswerInput()
+    if userAnswer == correctAnswer then 
+        correctAnswerObject.isVisible = true
+        audio.play(sound1)
+    else 
+        incorrectObject.isVisible = true 
+        audio.play(sound2)
+    end
           
     timer.performWithDelay(1600, RestartLevel1) 
 end
@@ -483,6 +560,20 @@ function scene:create( event )
     alternateAnswerBox2PreviousX = display.contentWidth * 0.9
     alternateAnswerBox3PreviousX = display.contentWidth * 0.9
 
+    -- create the correct text object and make it invisible
+    correctAnswerObject = display.newText( "Correct!", display.contentWidth/2, display.contentHeight*2/3, nil, 50)
+    correctAnswerObject:setTextColor(.2, 1, 0)
+    correctAnswerObject.isVisible = false
+
+
+     -- create the correct text object and make it invisible
+    incorrectObject = display.newText( "Incorrect!", display.contentWidth/2, display.contentHeight*2/3, nil, 50)
+    incorrectObject:setTextColor(1, 0, 0)
+    incorrectObject.isVisible = false
+
+
+
+
 
     -- the black box where the user will drag the answer
     userAnswerBoxPlaceholder = display.newImageRect("Images/userAnswerBoxPlaceholder.png",  130, 130, 0, 0)
@@ -501,6 +592,7 @@ function scene:create( event )
     sceneGroup:insert( alternateAnswerBox2 )
     sceneGroup:insert( alternateAnswerBox3 )
     sceneGroup:insert( soccerball )
+
 
 end --function scene:create( event )
 
@@ -526,6 +618,8 @@ function scene:show( event )
         -- Example: start timers, begin animation, play audio, etc.
         RestartLevel1()
         AddAnswerBoxEventListeners() 
+        audio.play()
+
 
     end
 
