@@ -54,7 +54,7 @@ local alternateAnswer2
 local alternateAnswer3  
 
 local points = 0
-local lives = 2
+local lives = 3
 
 
 -- Variables containing the user answer and the actual answer
@@ -94,60 +94,12 @@ local userAnswerBoxPlaceholder
 -- sound effects
 local correctSound
 local booSound
+local userAnswer
+local correctAnswer
 
 -----------------------------------------------------------------------------------------
 -- LOCAL FUNCTIONS
 -----------------------------------------------------------------------------------------
-local function NumericFieldListener( touch )
-
-    if (event.phase == "submitted") then 
-         -- clear text 
-           event.target.text = ""
-    
-        -- when the answer is submitted set their input to userAnswer
-        userAnswer = tonumber(event.target.text)
-
-        -- if the users answer and the correct answer are the same:
-        if (userAnswer == correctAnswer) then
-           audio.play(Sound1)
-           -- give a point if user gets the correct answer
-           points = points + 1
-           -- clear text 
-           event.target.text = ""
-           
-        -- if the users answer and the correct answer are not the same:
-        else
-            audio.play(Sound2)
-            -- take a life if user gets the incorrect answer
-            lives = lives - 1
-           
-        end   
-
-            -- if points reach 5 points display You Win!
-        if  
-            (points == 3)  then
-            youWin = display.newImageRect("Images/Winscreen.png", 1024, 769)
-            audio.stop()
-            youWin.x = display.contentCenterX
-            youWin.y = display.contentCenterY
-
-
-
-        end 
-
-        if    -- If lives = less or equal to zero display Game Over!
-            (lives == 0) then
-            gameOver = display.newImageRect("Images/Losescreen.png", 1024, 769)
-            audio.stop()
-            gameOver.x = display.contentCenterX
-            gameOver.y = display.contentCenterY
-
-
-
-        end   
-    end
-end
-
 
 
 
@@ -299,6 +251,10 @@ end
 local function YouWinTransitionLevel1( )
     composer.gotoScene("you_win", {effect = "fade", time = 500})
 end
+-- go to you lose screen
+local function YouLoseTransitionLevel1( )
+    composer.gotoScene("you_lose", {effect = "fade", time = 500})
+end
 
 -- Function to Restart Level 1
 local function RestartLevel1()
@@ -312,11 +268,24 @@ end
 -- Function to Check User Input
 local function CheckUserAnswerInput()
     if userAnswer == correctAnswer then 
+        -- add a point if they fet the question correct
+        points = points + 1
         correctAnswerObject.isVisible = true
         audio.play(sound1)
+        if (points == 3) then 
+            YouWinTransitionLevel1()
+        end
+
+
     else 
+        -- subtract a life every time they get the answer wrong
+        lives = lives - 1
         incorrectObject.isVisible = true 
         audio.play(sound2)
+        -- if lives are gone go to lose screen
+        if (lives == 0) then 
+            YouLoseTransitionLevel1()
+        end
     end
           
     timer.performWithDelay(1600, RestartLevel1) 
